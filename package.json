@@ -1,0 +1,15 @@
+{
+    "name": "audiostate-roon-extension",
+    "version": "1.0.0",
+    "description": "audiostate-roon-extension",
+    "main": "app.js",
+    "author": "Charles Billette",
+    "dependencies": {
+        "node-roon-api": "github:roonlabs/node-roon-api",
+        "node-roon-api-browse": "github:roonlabs/node-roon-api-browse",
+        "node-roon-api-image": "github:roonlabs/node-roon-api-image",
+        "node-roon-api-settings": "github:roonlabs/node-roon-api-settings",
+        "node-roon-api-status": "github:roonlabs/node-roon-api-status",
+        "node-roon-api-transport": "github:roonlabs/node-roon-api-transport"
+    }
+}
