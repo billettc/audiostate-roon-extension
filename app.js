@@ -3,10 +3,8 @@ const RoonApi = require("node-roon-api"),
     RoonApiTransport = require('node-roon-api-transport'),
     RoonApiImage = require('node-roon-api-image'),
     RoonApiBrowse = require('node-roon-api-browse');
-const WebSocketServer = require('ws').Server;
 
-let core;
-let zones
+const WebSocketServer = require('ws').Server;
 
 const wss = new WebSocketServer({ port: 9060 });
 
@@ -17,12 +15,17 @@ wss.on('connection', function connection(ws) {
     });
 });
 
+
+let core;
+let zones
+
 const roon = new RoonApi({
     extension_id: 'com.cbillette.audio.state',
     display_name: "Audio State WS",
     display_version: "1.0.0",
     publisher: 'Charles Billette',
     email: 'charles@cbillette.com',
+    log_level: 'none',
 
     core_paired: function (core_) {
         core = core_;
@@ -60,3 +63,28 @@ roon.init_services({
 });
 
 roon.start_discovery();
+
+
+const http = require("http");
+const url = require("url");
+
+const imageListener = function (req, res) {
+
+    const query = url.parse(req.url, true).query;
+    console.log("image key requested:", query, typeof req.url);
+
+    core.services.RoonApiImage.get_image(
+        query.image_key,
+        { scale: "fit", width: 1080, height: 1080, format: "image/jpeg" },
+        function(cb, contentType, body) {
+            console.log("image response:", cb, contentType, body);
+            res.contentType = contentType;
+            res.writeHead(200, { "Content-Type": "image/jpeg" });
+            res.end(body, "binary");
+        }
+    );
+};
+const server = http.createServer(imageListener);
+server.listen(9070, '0.0.0.0', () => {
+    console.log(`Server is running`);
+});
